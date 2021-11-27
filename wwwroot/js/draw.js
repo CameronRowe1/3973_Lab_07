@@ -31,7 +31,7 @@ var mouseX, mouseY, mouseDown = 0;
 // Parameters are: A canvas context, the x position, the y position, the size of the dot
 function drawDot(x, y, size) {
     // Let's use black by setting RGB values to 0, and 255 alpha (completely opaque)
-    var r = 0;
+    var r = 210;
     var g = 0;
     var b = 0;
     var a = 255;
