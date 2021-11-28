@@ -1,32 +1,26 @@
 ﻿@page
 <div class="container">
-  <div class="row">&nbsp;</div>
-  <div class="row">
-    <div class="col-6">&nbsp;</div>
-    <div class="col-6">
-
-      <div class="text-center">
-          <h1 class="display-4">BCIT Comp 3973</h1>
-          <h3>Lab 07 SignalR Draw</h3>
-          <h3>Cameron Rowe - A00201671</h4>
-          <p>Find out about .NET and MVC <a href="https://www.bcit.ca/study/courses/comp3973">at BCIT with Medhat Elmasry</a></p>
-      </div>
-      
-      User..........<input type="text" id="userInput" />
-      <br />
-      Message...<input type="text" id="messageInput" />
-      <input type="button" id="sendButton" value="Send Message" />
-    </div>
-  </div>
   <div class="row">
     <div class="col-12">
-      <hr />
+      <div class="text-center">
+        <h2 class="display-4">BCIT Comp 3973</h2>
+        <h3>Lab 07 SignalR Draw</h3>
+        <h3>Cameron Rowe - A00201671</h4>
+        <p>Find out about .NET and MVC <a href="https://www.bcit.ca/study/courses/comp3973">at BCIT with Medhat Elmasry</a></p>
+        <div class="pt-3">
+          <label for="userInput">Username</label>
+          <input type="text" id="userInput" />
+          <label for="messageInput">Message</label>
+          <input type="text" id="messageInput" />
+          <input type="button" id="sendButton" value="Send Message" />
+        </div>
+        <hr />
+      </div>
     </div>
   </div>
   <div class="row">
-    <div class="col-6">&nbsp;</div>
-    <div class="col-6">
-      <ul id="messagesList"></ul>
+    <div class="col text-center">
+      <p id="messagesList"></p>
     </div>
   </div>
 </div>

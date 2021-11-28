@@ -3,13 +3,17 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/drawDotHub").build();
 
-connection.on("updateDot", function (x, y) {
-    drawDot(x, y, 8);
+connection.on("updateDot", function (sender) {        //CamNote, take user arg, pass to drawDot to persist color?
+    let outsideUser = JSON.parse(sender)
+    if(outsideUser.id != user.id){
+        drawDot(outsideUser);
+    }
+    
 });
 
-connection.on("clearCanvas", function () {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
+// connection.on("clearCanvas", function () {
+//     ctx.clearRect(0, 0, canvas.width, canvas.height);
+// });
 
 connection.start().then(function () {
     // nothing here
@@ -18,10 +22,21 @@ connection.start().then(function () {
 });
 
 function tellServerToClear() {
-    connection.invoke("ClearCanvas").catch(function (err) {
-        return console.error(err.toString());
-    });
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // connection.invoke("ClearCanvas").catch(function (err) {
+    //     return console.error(err.toString());
+    // });
 }
+
+var user = {
+        id: Date.now() + "" + Math.random(),
+        r: Math.floor(Math.random() * (255 + 1) ),
+        g: Math.floor(Math.random() * (255 + 1) ),
+        b: Math.floor(Math.random() * (255 + 1) ),
+        size: 8, x: 0, y: 0
+};
+const userJSON = JSON.stringify(user);
+
 //////////////////////////////////////////////////////
 // Variables for referencing the canvas and 2dcanvas context
 var canvas, ctx;
@@ -29,17 +44,17 @@ var canvas, ctx;
 var mouseX, mouseY, mouseDown = 0;
 // Draws a dot at a specific position on the supplied canvas name
 // Parameters are: A canvas context, the x position, the y position, the size of the dot
-function drawDot(x, y, size) {
+function drawDot(drawer) {
     // Let's use black by setting RGB values to 0, and 255 alpha (completely opaque)
-    var r = 210;
-    var g = 0;
-    var b = 0;
+    var r = drawer.r;    //0;
+    var g = drawer.g;
+    var b = drawer.b;
     var a = 255;
     // Select a fill style
     ctx.fillStyle = "rgba(" + r + "," + g + "," + b + "," + (a / 255) + ")";
     // Draw a filled circle
     ctx.beginPath();
-    ctx.arc(x, y, size, 0, Math.PI * 2, true);
+    ctx.arc(drawer.x, drawer.y, drawer.size, 0, Math.PI * 2, true);
     ctx.closePath();
     ctx.fill();
 }
@@ -47,11 +62,7 @@ function drawDot(x, y, size) {
 // Keep track of the mouse button being pressed and draw a dot at current location
 function sketchpad_mouseDown() {
     mouseDown = 1;
-    drawDot(mouseX, mouseY, 8);
-
-    connection.invoke("UpdateCanvas", mouseX, mouseY).catch(function (err) {
-        return console.error(err.toString());
-    });
+    callUpdateCanvas();
 }
 
 // Keep track of the mouse button being released
@@ -65,11 +76,17 @@ function sketchpad_mouseMove(e) {
     getMousePos(e);
     // Draw a dot if the mouse button is currently being pressed
     if (mouseDown == 1) {
-        drawDot(mouseX, mouseY, 8);
-        connection.invoke("UpdateCanvas", mouseX, mouseY).catch(function (err) {
-            return console.error(err.toString());
-        });
+        callUpdateCanvas();
     }
+}
+
+function callUpdateCanvas(){
+    user.x = mouseX
+    user.y = mouseY
+    drawDot(user)
+    connection.invoke("UpdateCanvas", JSON.stringify(user)).catch(function (err) {
+        return console.error(err.toString());
+    });
 }
 
 // Get the current mouse position relative to the top-left of the canvas
